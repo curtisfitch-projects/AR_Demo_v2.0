@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Web AR Viewer</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script
+      type="module"
+      src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js"
+    ></script>
+
+    <script
+      nomodule
+      src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"
+    ></script>
+
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js"></script>
+
+    <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+
+    <script src="https://unpkg.com/resize-observer-polyfill@1.5.1/dist/ResizeObserver.js"></script>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+
+    <link rel="stylesheet" href="ContainerStyle.css" />
+  </head>
+  <body>
+    <model-viewer 
+	src="./scene72.glb" 
+	ios-src="./scene72.usdz" 
+	ar 
+	field-of-view= "45deg"
+	exposure= "1.5"
+	ar-scale = "fixed"
+	ar-modes="webxr scene-viewer quick-look" 
+	shadow-intensity = "0.1"
+	quick-look-browsers = "safari chrome"
+	camera-controls alt="A 3D model carousel"
+	>
+  
+ 
+  
+  <button slot="ar-button" id="ar-button">
+    View in your space
+  </button>
+	
+
+</model-viewer>
+
+<script type="module">
+  const modelViewer = document.querySelector("model-viewer");
+
+  window.switchSrc = (element, name) => {
+    const base = "./" + name;
+    modelViewer.src = base + '.glb';
+    const slides = document.querySelectorAll(".slide");
+    slides.forEach((element) => {element.classList.remove("selected");});
+    element.classList.add("selected");
+  };
+
+</script>
+
+<style>
+  /* This keeps child nodes hidden while the element loads */
+  :not(:defined) > * {
+    display: none;
+  }
+
+  model-viewer {
+    background-color: #eee;
+	width:95%;
+	left:2%;
+	height:260px;
+    --poster-color: #eee;
+  }
+
+  
+  #ar-button {
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+    background-position: 5px 50%;
+    background-color: #fff;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 25px;
+	display: inline-block;
+    font-family: Roboto Regular, Helvetica Neue, sans-serif;
+    font-size: 12px;
+    color:#4285f4;
+    height: 36px;
+    line-height: 36px;
+    border-radius: 18px;
+    border: 1px solid #DADCE0;
+  }
+
+  #ar-button:active {
+    background-color: #E8EAED;
+  }
+
+  #ar-button:focus {
+    outline: none;
+  }
+
+  #ar-button:focus-visible {
+    outline: 1px solid #4285f4;
+  }
+
+  @keyframes circle {
+    from { transform: translateX(-50%) rotate(0deg) translateX(50px) rotate(0deg); }
+    to   { transform: translateX(-50%) rotate(360deg) translateX(50px) rotate(-360deg); }
+  }
+
+  @keyframes elongate {
+    from { transform: translateX(100px); }
+    to   { transform: translateX(-100px); }
+  }
+
+  model-viewer > #ar-prompt {
+    position: absolute;
+    left: 50%;
+    bottom: 175px;
+    animation: elongate 2s infinite ease-in-out alternate;
+    display: none;
+  }
+
+  model-viewer[ar-status="session-started"] > #ar-prompt {
+    display: block;
+  }
+
+  model-viewer > #ar-prompt > img {
+    animation: circle 4s linear infinite;
+  }
+
+  .slider {
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    position: absolute;
+	left: 10px;
+    bottom: 16px;
+  }
+
+  
+  .slides {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .slide {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    width: 70px;
+    height: 30px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #fff;
+    margin-right: 10px;
+    border-radius: 10px;
+    border: none;
+    display: flex;
+  }
+
+  .slide.selected {
+    border: 2px solid #4285f4;
+  }
+
+  .slide:focus {
+    outline: none;
+  }
+
+  .slide:focus-visible {
+    outline: 1px solid #4285f4;
+  }
+
+  .BuyNow {
+  z-index:10;
+  padding: 8px 18px;
+  font-size: 11px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  position: fixed;
+     bottom: 56px;
+    right: 10px;
+  background-color: #9A673A;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 1px #999;
+}
+
+
+.BuyNow:active {
+ 
+  background-color: #733D1C;
+  box-shadow: 0 1px #1555;
+  transform: translateY(4px);
+}
+
+ .AddToCart {
+  z-index:10;
+  padding: 8px 18px;
+  font-size: 11px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+   position: fixed;
+     bottom: 18px;
+    right: 10px;
+  background-color: #9A673A;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 1px #999;
+}
+
+.AddToCart:active {
+  background-color: #733D1C;
+  box-shadow: 0 1px #1555;
+  transform: translateY(4px);
+}
+  
+  
+  h1.ml8 {
+  font-weight: 700;
+  font-size: 1em;
+  color: #fff;
+  width: 3em;
+  height: 3em;
+  right: 5px;
+  top: 0.9em;
+   position: absolute;
+}
+
+.ml8 .letters-container {
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 5px;
+  bottom: 0;
+  height: 1em;
+}
+
+.ml8 .letters {
+position: relative;
+  z-index: 2;
+  
+}
+
+
+.ml8 .circle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+}
+
+.ml8 .circle-white {
+  width: 1em;
+  height: 1em;
+  border: 1px dashed #DBB090;
+  border-radius: 3em;
+}
+
+.ml8 .circle-dark {
+  width: 2.13em;
+  height: 2.13em;
+  background-color: #89B547;
+  border-radius: 2.4em;
+  z-index: 1;
+}
+
+.ml8 .circle-dark-dashed {
+right:-0.0275em;
+top:-0.02735em;
+  border-radius: 2.4em;
+  background-color: transparent;
+  border: 2px dashed #9A673A;
+  width: 2.4em;
+  height: 2.4em;
+}
+  
+</style>
+  </body>
+</html>
